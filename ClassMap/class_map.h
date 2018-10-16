@@ -8,12 +8,14 @@
 
 namespace class_map
 {
+	typedef void* Ptr;
+
 	class indicator
 	{
-		const char const* ClassName;
+		const Ptr ptr;
 	public:
-		indicator(const char * n) : ClassName(n) {}
-		const char const* GetClassName() const { return ClassName; }
+		indicator(const Ptr ptr) : ptr(ptr) {}
+		const Ptr GetPtr() const { return ptr; }
 	};
 
 	template <class _Tp>
@@ -53,7 +55,6 @@ namespace class_map
 	class __ClassMapWrapper
 	{
 	public:
-		typedef void* Ptr;
 		static __StrMap<Ptr>::value * mapper;
 	};
 
@@ -66,13 +67,13 @@ namespace class_map
 	template<class _Type>
 	_Type* get(const indicator & indicator)
 	{
-		return reinterpret_cast<_Type*>(__ClassMapWrapper::mapper->at(indicator.GetClassName()));
+		return reinterpret_cast<_Type*>(indicator.GetPtr());
 	}
 
 	template<class _Type>
 	const indicator make_indicator()
 	{
-		return indicator(typeid(_Type).name());
+		return indicator(__ClassMapWrapper::mapper->at(typeid(_Type).name()));
 	}
 
 }
@@ -85,7 +86,7 @@ namespace class_map
 		const auto __dummy__##_CLASS = [=]() { \
 			if (!__ClassMapWrapper::mapper) \
 			{ \
-				__ClassMapWrapper::mapper = new __StrMap<class_map::__ClassMapWrapper::Ptr>::value(); \
+				__ClassMapWrapper::mapper = new __StrMap<class_map::Ptr>::value(); \
 			} \
 			__ClassMapWrapper::mapper->emplace(typeid(_CLASS).name(), new _CLASS(__VA_ARGS__)); \
 			return 0; \

@@ -5,5 +5,5 @@
 
 namespace class_map
 {
-	__StrMap<__ClassMapWrapper::Ptr>::value * __ClassMapWrapper::mapper = nullptr;
+	__StrMap<Ptr>::value * __ClassMapWrapper::mapper = nullptr;
 }
